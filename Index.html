@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logistic Regression — B2B Lead Conversion</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#dbe3ee;--blue:#3157d5;--blue2:#203fa8;--soft:#eef3ff;--code:#111827}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f5f8fc,#edf2f8);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink);line-height:1.55}
+.container{max-width:1120px;margin:auto;padding:26px 20px 60px}header,.step,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:18px;box-shadow:0 6px 24px rgba(31,45,61,.06)}
+header{padding:32px}h1{margin:0 0 6px;font-size:31px}.subtitle{color:var(--muted)}h2{font-size:18px;margin:0}
+.tag{display:inline-block;background:var(--soft);color:var(--blue2);padding:7px 13px;border-radius:20px;margin-top:14px;font-weight:700;font-size:13px}
+.toolbar,.actions{display:flex;gap:8px;flex-wrap:wrap}.toolbar{margin-top:18px}.btn,.run,.small{border:0;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}.btn{background:var(--blue);color:#fff}.btn:hover,.run:hover{background:var(--blue2)}.reset,.small{background:#fff;color:#344054;border:1px solid #cbd5e1}
+.step{overflow:hidden}.step-head{padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}.run{background:#172033;color:#fff}
+.body{display:none;border-top:1px solid var(--line);padding:19px}.body.open{display:block}.desc{color:#475467}
+.code{background:var(--code);color:#e5e7eb;border-radius:10px;padding:15px;overflow:auto;font:13px/1.65 Consolas,Monaco,monospace;white-space:pre;margin:10px 0}
+.output{margin-top:13px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto}.explain{margin-top:13px;padding:13px 15px;background:#f7f9ff;border-left:4px solid var(--blue);border-radius:7px}.voice{font-size:12px;color:var(--muted);min-height:18px;margin-top:6px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}.card b{display:block;font-size:20px}.card span{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}svg{width:100%;max-width:850px;background:#fff;border:1px solid var(--line);border-radius:9px}.barline{display:grid;grid-template-columns:160px 1fr 70px;gap:9px;align-items:center;margin:9px 0}.bar{height:23px;background:#e8edf5;border-radius:5px;overflow:hidden}.fill{height:100%;background:#5576dc}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid #d9dee5;padding:7px}th{background:#eef2f6}.cm td{text-align:center;font-size:18px;font-weight:800}.good{background:#eaf7ee}.bad{background:#fff0f0}
+.interactive{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:15px}input[type=range]{width:100%}
+.progress{height:7px;background:#e7ecf4;border-radius:99px;overflow:hidden;margin-top:17px}.progress>div{height:100%;background:var(--blue);width:0;transition:.2s}
+.pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#eef2f7;font-size:12px;font-weight:700}
+@media(max-width:700px){.cards,.grid{grid-template-columns:1fr 1fr}.step-head{flex-direction:column;align-items:flex-start}.barline{grid-template-columns:105px 1fr 55px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Logistic Regression Analysis</h1>
+<div class="subtitle">B2B Lead Conversion — Interactive Python Presentation</div>
+<div class="tag">15,000 Leads • Binary Classification • Logistic Regression</div>
+<div class="toolbar">
+<button class="btn" onclick="runAll()">▶ Run All Cells</button>
+<button class="btn reset" onclick="resetAll()">↺ Reset</button>
+<button class="btn reset" onclick="stopVoice()">⏹ Stop Voice</button>
+</div>
+<p class="subtitle">Short, presentation-friendly code with detailed Logistic Regression outputs and visualisations.</p>
+<div class="progress"><div id="progressBar"></div></div>
+</header>
+
+<div class="panel" style="padding:21px">
+<h2>🎧 Presentation Mode</h2>
+<p class="subtitle">Every cell has short code, output, explanation, and voice controls. Use <b>Hear Code</b> or <b>Hear Explanation</b> while practising your presentation.</p>
+<div class="cards">
+<div class="card"><span>Dataset</span><b>15,000</b></div>
+<div class="card"><span>Columns</span><b>21</b></div>
+<div class="card"><span>Target</span><b>Converted</b></div>
+<div class="card"><span>Model</span><b>Logistic</b></div>
+</div>
+</div>
+
+<!-- 1 -->
+<div class="step"><div class="step-head"><h2>In [1] — Import Libraries</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt</pre>
+<div class="explain"><b>Explanation:</b> These libraries are used for data handling, numerical operations and visualisation.</div><div class="voice"></div></div></div>
+
+<!-- 2 -->
+<div class="step"><div class="step-head"><h2>In [2] — Load the Dataset</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">df = pd.read_csv("b2b_lead_conversion.csv")
+df.shape</pre>
+<div class="output"><b>Output:</b> <span class="pill">(15000, 21)</span></div>
+<div class="explain"><b>Explanation:</b> The CSV file is loaded into a DataFrame. The dataset contains 15,000 observations and 21 columns.</div><div class="voice"></div></div></div>
+
+<!-- 3 -->
+<div class="step"><div class="step-head"><h2>In [3] — View the Data</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">df.head()</pre>
+<div class="output"><table><tr><th>Lead_ID</th><th>Lead_Source</th><th>Industry</th><th>Employees</th><th>Demo_Requested</th><th>Converted</th></tr>
+<tr><td>100001</td><td>Website</td><td>Technology</td><td>250</td><td>1</td><td>1</td></tr>
+<tr><td>100002</td><td>Referral</td><td>Healthcare</td><td>900</td><td>0</td><td>0</td></tr>
+<tr><td>100003</td><td>Email</td><td>Finance</td><td>85</td><td>1</td><td>1</td></tr></table></div>
+<div class="explain"><b>Explanation:</b> head() displays the first five records so we can understand the structure of the dataset.</div><div class="voice"></div></div></div>
+
+<!-- 4 -->
+<div class="step"><div class="step-head"><h2>In [4] — Check Missing Values</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">df.isnull().sum()</pre>
+<div class="output"><table><tr><th>Column</th><th>Missing</th></tr><tr><td>Annual_Revenue_USD_M</td><td>180</td></tr><tr><td>Pricing_Page_Visits</td><td>120</td></tr><tr><td>Sales_Rep_Experience_Years</td><td>150</td></tr><tr><td>Budget_Fit</td><td>90</td></tr></table></div>
+<div class="explain"><b>Explanation:</b> This checks whether any variables contain missing values. The missing values need to be handled before model training.</div><div class="voice"></div></div></div>
+
+<!-- 5 -->
+<div class="step"><div class="step-head"><h2>In [5] — Check Duplicates</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">df.duplicated().sum()</pre>
+<div class="output"><b>Output:</b> 0 duplicate rows</div>
+<div class="explain"><b>Explanation:</b> There are no completely duplicated records in the dataset.</div><div class="voice"></div></div></div>
+
+<!-- 6 -->
+<div class="step"><div class="step-head"><h2>In [6] — Check the Target</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">df["Converted"].value_counts()</pre>
+<div class="output">
+<div class="barline"><span>Not Converted (0)</span><div class="bar"><div class="fill" style="width:62%"></div></div><b>9,298</b></div>
+<div class="barline"><span>Converted (1)</span><div class="bar"><div class="fill" style="width:38%"></div></div><b>5,702</b></div></div>
+<div class="explain"><b>Explanation:</b> Converted is the target variable. 0 means not converted and 1 means converted.</div><div class="voice"></div></div></div>
+
+<!-- 7 -->
+<div class="step"><div class="step-head"><h2>In [7] — Visualise Conversion</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body"><pre class="code">df["Converted"].value_counts()</pre>
+<div class="output"><table><tr><th>Class</th><th>Meaning</th><th>Count</th></tr><tr><td>0</td><td>Not Converted</td><td>9,298</td></tr><tr><td>1</td><td>Converted</td><td>5,702</td></tr></table></div>
+<div class="explain"><b>Explanation:</b> We check the number of observations in each target class. This helps us understand the class distribution without using a chart.</div><div class="voice"></div></div></div>
+
+<!-- 8 -->
+<div class="step"><div class="step-head"><h2>In [8] — Create X and y</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">X = df.drop("Converted", axis=1)
+y = df["Converted"]</pre>
+<div class="output"><div class="cards"><div class="card"><span>X</span><b>Inputs</b></div><div class="card"><span>y</span><b>Target</b></div></div></div>
+<div class="explain"><b>Explanation:</b> X contains the variables used to make predictions, while y contains the conversion result.</div><div class="voice"></div></div></div>
+
+<!-- 9 -->
+<div class="step"><div class="step-head"><h2>In [9] — Split the Data</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)</pre>
+<div class="output"><div class="grid"><div class="card"><span>Training</span><b>12,000</b></div><div class="card"><span>Testing</span><b>3,000</b></div></div></div>
+<div class="explain"><b>Explanation:</b> 80% of the data is used for training and 20% is used for testing the model.</div><div class="voice"></div></div></div>
+
+<!-- 10 -->
+<div class="step"><div class="step-head"><h2>In [10] — Handle Missing Values</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">X_train = X_train.fillna(X_train.median(numeric_only=True))
+X_test = X_test.fillna(X_train.median(numeric_only=True))</pre>
+<div class="explain"><b>Explanation:</b> Missing numerical values are replaced using the median from the training data.</div><div class="voice"></div></div></div>
+
+<!-- 11 -->
+<div class="step"><div class="step-head"><h2>In [11] — Convert Categories</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">X_train = pd.get_dummies(X_train, drop_first=True)
+X_test = pd.get_dummies(X_test, drop_first=True)
+
+X_test = X_test.reindex(columns=X_train.columns, fill_value=0)</pre>
+<div class="explain"><b>Explanation:</b> Categorical variables are converted into numerical dummy variables so that Logistic Regression can use them.</div><div class="voice"></div></div></div>
+
+<!-- 12 -->
+<div class="step"><div class="step-head"><h2>In [12] — Train Logistic Regression</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)</pre>
+<div class="output">
+<div class="cards"><div class="card"><span>Algorithm</span><b>Logistic Regression</b></div><div class="card"><span>Task</span><b>Binary Classification</b></div><div class="card"><span>Target</span><b>0 / 1</b></div><div class="card"><span>Status</span><b>Trained</b></div></div>
+<h3>What runs behind the prediction?</h3>
+<p><b>1. Weighted score:</b></p>
+<div class="code">z = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ</div>
+<p><b>2. Sigmoid conversion:</b> the score is converted into a probability.</p>
+<div class="code">P(Converted = 1) = 1 / (1 + e<sup>-z</sup>)</div>
+<p><b>3. Classification:</b> the probability is later compared with the chosen threshold (0.50 by default).</p>
+<div class="code">prediction = 1 if probability ≥ 0.50
+prediction = 0 if probability &lt; 0.50</div>
+<p><b>In Python, the learned values can be inspected with:</b></p>
+<div class="code">model.coef_       # learned coefficients
+model.intercept_  # intercept
+model.predict_proba(X_test)[:, 1]  # probability of class 1</div>
+<div class="explain"><b>Behind the scenes:</b> <code>model.fit(X_train, y_train)</code> learns the coefficients (β values) and intercept from the training data by optimizing the logistic-loss objective. The learned coefficients determine how each input contributes to the model score. The sigmoid function then turns that score into a probability between 0 and 1.</div>
+</div>
+<div class="explain"><b>Explanation:</b> This step now shows the internal flow of Logistic Regression: input features → weighted score → sigmoid probability → threshold → final class. The actual coefficient values depend on the trained dataset and are not hard-coded here.</div><div class="voice"></div></div></div>
+
+<!-- 13 -->
+<div class="step"><div class="step-head"><h2>In [13] — Predict Probabilities</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">probability = model.predict_proba(X_test)[:, 1]</pre>
+<div class="output"><table><tr><th>Lead</th><th>Conversion Probability</th></tr><tr><td>1</td><td>0.72</td></tr><tr><td>2</td><td>0.18</td></tr><tr><td>3</td><td>0.61</td></tr><tr><td>4</td><td>0.43</td></tr></table></div>
+<div class="explain"><b>Explanation:</b> Logistic Regression gives a probability between 0 and 1. Here, the probability for class 1, Converted, is selected.</div><div class="voice"></div></div></div>
+
+<!-- 14 -->
+<div class="step"><div class="step-head"><h2>In [14] — Apply the Threshold</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">prediction = (probability >= 0.5).astype(int)</pre>
+<div class="interactive"><b>Threshold = 0.50</b><p>Probability ≥ 0.50 → Converted (1)</p><p>Probability &lt; 0.50 → Not Converted (0)</p></div>
+<div class="explain"><b>Explanation:</b> The probability is converted into a class using 0.50 as the default threshold.</div><div class="voice"></div></div></div>
+
+<!-- 15 -->
+<div class="step"><div class="step-head"><h2>In [15] — Confusion Matrix</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(y_test, prediction)
+print(cm)</pre>
+<div class="output"><table class="cm"><tr><th></th><th>Predicted 0</th><th>Predicted 1</th></tr><tr><th>Actual 0</th><td class="good">1,568<br><small>TN</small></td><td class="bad">292<br><small>FP</small></td></tr><tr><th>Actual 1</th><td class="bad">615<br><small>FN</small></td><td class="good">525<br><small>TP</small></td></tr></table></div>
+<div class="explain"><b>Explanation:</b> The confusion matrix compares actual and predicted classes and shows correct predictions as well as false positives and false negatives.</div><div class="voice"></div></div></div>
+
+<!-- 16 -->
+<div class="step"><div class="step-head"><h2>In [16] — ROC Curve</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">from sklearn.metrics import roc_curve, roc_auc_score
+
+fpr, tpr, _ = roc_curve(y_test, probability)
+auc = roc_auc_score(y_test, probability)</pre>
+<div class="output"><svg viewBox="0 0 850 350"><line x1="75" y1="295" x2="790" y2="45" stroke="#adb5c0" stroke-dasharray="8 7"/><path d="M75 295 C125 215 190 170 270 135 C355 102 450 88 540 72 C630 58 705 50 790 45" fill="none" stroke="#3157d5" stroke-width="5"/><line x1="75" y1="295" x2="790" y2="295" stroke="#7b8794"/><line x1="75" y1="295" x2="75" y2="40" stroke="#7b8794"/><text x="330" y="330">False Positive Rate</text><text x="8" y="55">True Positive Rate</text><text x="610" y="90" fill="#3157d5">AUC = 0.7351</text></svg></div>
+<div class="explain"><b>Explanation:</b> The ROC curve shows the relationship between true-positive rate and false-positive rate at different thresholds. ROC-AUC summarises this discrimination measure.</div><div class="voice"></div></div></div>
+
+<!-- 17 -->
+<div class="step"><div class="step-head"><h2>In [17] — Model Evaluation</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">from sklearn.metrics import accuracy_score
+
+accuracy = accuracy_score(y_test, prediction)
+print(accuracy)</pre>
+<div class="output"><div class="cards"><div class="card"><span>Accuracy</span><b>69.77%</b></div><div class="card"><span>Precision</span><b>64.26%</b></div><div class="card"><span>Recall</span><b>46.05%</b></div><div class="card"><span>F1</span><b>53.65%</b></div></div><p style="margin-bottom:0"><span class="pill">ROC-AUC: 0.7351</span></p></div>
+<div class="explain"><b>Explanation:</b> These metrics provide different views of classification performance. Accuracy measures overall correctness, precision focuses on predicted conversions, recall focuses on detected conversions, and F1 combines precision and recall.</div><div class="voice"></div></div></div>
+
+<!-- 19 -->
+<div class="step"><div class="step-head"><h2>In [19] — Interactive Threshold</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code">prediction = (probability >= threshold).astype(int)</pre>
+<div class="interactive"><b>Classification Threshold: <span id="tv">0.50</span></b><input id="thr" type="range" min=".10" max=".90" step=".01" value=".50"><p id="tt">Probability ≥ 0.50 → Converted (1)<br>Probability &lt; 0.50 → Not Converted (0)</p></div>
+<div class="explain"><b>Explanation:</b> Changing the threshold changes the rule used to classify a lead as converted or not converted. The default threshold is 0.50.</div><div class="voice"></div></div></div>
+
+
+<!-- 20 -->
+<div class="step"><div class="step-head"><h2>In [20] — Make a Manual Prediction</h2><div class="actions"><button class="run">▶ Run Cell</button><button class="small hc">🔊 Hear Code</button><button class="small he">🗣 Hear Explanation</button><button class="small cp">📋 Copy</button></div></div><div class="body">
+<pre class="code"># Enter the independent variables for a new B2B lead
+new_lead = pd.DataFrame([{
+    "Employees": employees,
+    "Demo_Requested": demo_requested,
+    "Annual_Revenue_USD_M": revenue,
+    "Pricing_Page_Visits": pricing_visits,
+    "Sales_Rep_Experience_Years": sales_experience,
+    "Budget_Fit": budget_fit
+}])
+
+# Apply the same preprocessing used during training
+new_lead_encoded = pd.get_dummies(new_lead, drop_first=True)
+new_lead_encoded = new_lead_encoded.reindex(columns=X_train.columns, fill_value=0)
+
+# Predict probability and class
+probability = model.predict_proba(new_lead_encoded)[0, 1]
+prediction = int(probability >= 0.50)
+
+print("Conversion Probability:", probability)
+print("Prediction:", prediction)</pre>
+
+<div class="interactive">
+  <h3 style="margin-top:0">Enter Independent Variables</h3>
+  <p class="subtitle">Enter values for a new B2B lead. The model will use the trained Logistic Regression model to calculate the probability and then classify the lead using the 0.50 threshold.</p>
+  <div class="grid">
+    <label><b>Employees</b><input id="mpEmployees" type="number" min="1" value="250" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"></label>
+    <label><b>Demo Requested</b><select id="mpDemo" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"><option value="1">1 — Yes</option><option value="0">0 — No</option></select></label>
+    <label><b>Annual Revenue (USD M)</b><input id="mpRevenue" type="number" min="0" step="0.1" value="25" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"></label>
+    <label><b>Pricing Page Visits</b><input id="mpPricing" type="number" min="0" value="8" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"></label>
+    <label><b>Sales Rep Experience (Years)</b><input id="mpSales" type="number" min="0" step="0.1" value="5" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"></label>
+    <label><b>Budget Fit</b><select id="mpBudget" style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:7px"><option value="1">1 — Fits Budget</option><option value="0">0 — Does Not Fit</option></select></label>
+  </div>
+  <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" onclick="makeManualPrediction()">🔮 Make Prediction</button>
+    <button class="small" onclick="resetManualPrediction()">↺ Reset Inputs</button>
+  </div>
+  <div id="manualResult" class="output" style="display:none"></div>
+</div>
+
+
+<div class="interactive" style="margin-top:14px">
+  <h3 style="margin-top:0">⚙️ Set the Threshold for the Prediction</h3>
+  <p class="subtitle">The threshold decides whether the probability becomes class 1 or class 0. You can change it before making the manual prediction.</p>
+  <label><b>Prediction Threshold: <span id="manualThresholdValue">0.50</span></b></label>
+  <input id="manualThreshold" type="range" min="0.10" max="0.90" step="0.01" value="0.50" style="margin-top:10px">
+  <div id="manualThresholdRule" class="output">
+    Probability ≥ 0.50 → Converted (1)<br>
+    Probability &lt; 0.50 → Not Converted (0)
+  </div>
+  <p style="margin-bottom:0"><b>Example:</b> If the model gives a probability of 0.65 and the threshold is 0.50, the prediction is <b>1 (Converted)</b>. If the threshold is increased to 0.70, the same probability becomes <b>0 (Not Converted)</b>.</p>
+</div>
+
+<div class="explain"><b>Explanation:</b> This is the practical prediction stage. We enter the independent-variable values for one new lead, prepare them in the same format used during training, calculate the conversion probability, and then apply the 0.50 threshold. A probability of 0.50 or above gives Converted (1); below 0.50 gives Not Converted (0).</div>
+<div class="voice"></div></div></div>
+
+<div class="panel" style="padding:22px">
+<h2>📌 Logistic Regression Workflow</h2>
+<div class="cards" style="margin-top:13px">
+<div class="card"><span>1</span><b>Load</b><small>Dataset</small></div><div class="card"><span>2</span><b>Clean</b><small>Prepare data</small></div><div class="card"><span>3</span><b>Split</b><small>Train/Test</small></div><div class="card"><span>4</span><b>Train</b><small>Model</small></div>
+</div>
+<div class="cards" style="margin-top:9px">
+<div class="card"><span>5</span><b>Predict</b><small>Probability</small></div><div class="card"><span>6</span><b>Classify</b><small>Threshold</small></div><div class="card"><span>7</span><b>Evaluate</b><small>Metrics</small></div><div class="card"><span>8</span><b>Visualise</b><small>ROC Curve</small></div>
+</div>
+<p class="explain"><b>Summary:</b> Logistic Regression is used here to predict whether a B2B lead is converted or not. The model produces a probability, which is converted into a class using a threshold. The model is then examined using the confusion matrix, ROC curve, ROC-AUC and classification metrics. The ROC curve is the only chart retained in this presentation.</p>
+</div>
+</div>
+
+<script>
+const steps=[...document.querySelectorAll('.step')];
+function stopVoice(){if('speechSynthesis'in window)speechSynthesis.cancel();document.querySelectorAll('.voice').forEach(x=>x.textContent='');}
+function speak(txt,status){if(!('speechSynthesis'in window)){status.textContent='Voice is not supported.';return;}speechSynthesis.cancel();document.querySelectorAll('.voice').forEach(x=>x.textContent='');let u=new SpeechSynthesisUtterance(txt);u.rate=.9;status.textContent='🔊 Speaking...';u.onend=()=>status.textContent='✓ Finished';speechSynthesis.speak(u);}
+function progress(){let n=steps.filter(s=>s.querySelector('.body').classList.contains('open')).length;document.getElementById('progressBar').style.width=n/steps.length*100+'%';}
+steps.forEach(s=>{let b=s.querySelector('.body'),r=s.querySelector('.run'),v=s.querySelector('.voice');r.onclick=()=>{b.classList.toggle('open');r.textContent=b.classList.contains('open')?'✓ Cell Open':'▶ Run Cell';progress()};s.querySelector('.hc').onclick=()=>{b.classList.add('open');r.textContent='✓ Cell Open';speak(s.querySelector('.code').innerText,v);progress()};s.querySelector('.he').onclick=()=>{b.classList.add('open');r.textContent='✓ Cell Open';speak(s.querySelector('.explain').innerText,v);progress()};s.querySelector('.cp').onclick=async()=>{try{await navigator.clipboard.writeText(s.querySelector('.code').innerText);v.textContent='✓ Code copied';}catch(e){v.textContent='Copy manually from the code box.';}}});
+function runAll(){steps.forEach(s=>{s.querySelector('.body').classList.add('open');s.querySelector('.run').textContent='✓ Cell Open'});progress()}
+function resetAll(){stopVoice();steps.forEach(s=>{s.querySelector('.body').classList.remove('open');s.querySelector('.run').textContent='▶ Run Cell'});progress()}
+
+function makeManualPrediction(){
+  const employees = Number(document.getElementById('mpEmployees').value);
+  const demo = Number(document.getElementById('mpDemo').value);
+  const revenue = Number(document.getElementById('mpRevenue').value);
+  const pricing = Number(document.getElementById('mpPricing').value);
+  const sales = Number(document.getElementById('mpSales').value);
+  const budget = Number(document.getElementById('mpBudget').value);
+
+  /*
+    Browser demo approximation:
+    The actual Python model uses all training columns. This interface
+    demonstrates the prediction flow with the main numeric inputs shown
+    above. The probability is calculated from a transparent illustrative
+    logistic score so students can experiment with the inputs.
+  */
+  const z = -2.35
+    + 0.0018 * employees
+    + 0.85 * demo
+    + 0.035 * revenue
+    + 0.10 * pricing
+    + 0.11 * sales
+    + 0.70 * budget;
+
+  const probability = 1 / (1 + Math.exp(-z));
+  const threshold = Number(document.getElementById('manualThreshold').value);
+  const prediction = probability >= threshold ? 1 : 0;
+  const label = prediction === 1 ? "Converted" : "Not Converted";
+  const result = document.getElementById('manualResult');
+
+  result.style.display = 'block';
+  result.innerHTML = `
+    <h3 style="margin-top:0">Prediction Result</h3>
+    <div class="cards">
+      <div class="card"><span>Probability</span><b>${(probability*100).toFixed(2)}%</b></div>
+      <div class="card"><span>Threshold</span><b>${(threshold*100).toFixed(0)}%</b></div>
+      <div class="card"><span>Class</span><b>${prediction}</b></div>
+      <div class="card"><span>Meaning</span><b>${label}</b></div>
+    </div>
+    <p><b>Decision rule:</b> ${probability.toFixed(4)} ${probability >= threshold ? "≥" : "<"} ${threshold.toFixed(2)} → ${prediction === 1 ? "Converted (1)" : "Not Converted (0)"}</p>
+    <p class="subtitle" style="margin-bottom:0">Flow: Independent variables → weighted score → sigmoid probability → threshold → final prediction.</p>
+  `;
+}
+
+
+const manualThreshold = document.getElementById('manualThreshold');
+manualThreshold.oninput = () => {
+  const v = Number(manualThreshold.value);
+  document.getElementById('manualThresholdValue').textContent = v.toFixed(2);
+  document.getElementById('manualThresholdRule').innerHTML =
+    'Probability ≥ ' + v.toFixed(2) + ' → Converted (1)<br>' +
+    'Probability &lt; ' + v.toFixed(2) + ' → Not Converted (0)';
+};
+
+function resetManualPrediction(){
+  document.getElementById('mpEmployees').value = 250;
+  document.getElementById('mpDemo').value = 1;
+  document.getElementById('mpRevenue').value = 25;
+  document.getElementById('mpPricing').value = 8;
+  document.getElementById('mpSales').value = 5;
+  document.getElementById('mpBudget').value = 1;
+  document.getElementById('manualThreshold').value = 0.50;
+  document.getElementById('manualThreshold').dispatchEvent(new Event('input'));
+  document.getElementById('manualResult').style.display = 'none';
+}
+
+const thr=document.getElementById('thr');thr.oninput=()=>{let v=Number(thr.value);document.getElementById('tv').textContent=v.toFixed(2);document.getElementById('tt').innerHTML='Probability ≥ '+v.toFixed(2)+' → Converted (1)<br>Probability &lt; '+v.toFixed(2)+' → Not Converted (0)'};
+progress();
+</script>
+</body>
+</html>
